@@ -30,11 +30,11 @@ export default () => ({
                         switch (error.code) {
                             case 'auth/user-not-found':
                                 alert('Email não encontrado, favor cadastrar.')
-                                resolve(error)
+                                resolve(error.code)
                                 break;
                             case 'auth/wrong-password':
                                 alert('Email ou senha incorretos')
-                                resolve(error)
+                                resolve(error.code)
                                 break;
                             default:
                                 alert('Ocorreu um erro! tente novamente mais tarde!')
@@ -90,6 +90,7 @@ export default () => ({
                                 break;
                             case 'auth/email-already-in-use':
                                 alert('Este e-mail já tem uma conta criada..')
+                                resolve(error)
                                 break;
                             default:
                                 alert('Ocorreu um erro! tente novamente mais tarde!')
@@ -220,48 +221,102 @@ export default () => ({
             var storage = firebase.storage()
             var listRef = storage.ref('/')
             let fotos = []
-          
+
             listRef
                 .child('convensao_janeiro/')
-                .listAll() 
-                .then((res) => {                     
-                  res.items.forEach(async (imagemRef) => {  
+                .listAll()
+                .then((res) => {
+                    res.items.forEach(async (imagemRef) => {
 
-                      const teste = await  imagemRef.getDownloadURL().then((url)=>{
-                            fotos.push({url:url})     
-                                                                           
-                            return(fotos)
-                        })                                         
-                        
-                    })             
-                    
-                })                     
-            setTimeout(() => {                
-                resolve(fotos)
-            }, 2000)          
+                        const teste = await imagemRef.getDownloadURL().then((url) => {
+                            fotos.push({ url: url })
 
-        })
-    
-    },
+                            return (fotos)
+                        })
 
-    getPesquisa:() => {
-        return new Promise((resolve, reject) => {
-            firebase
-            .database()
-            .ref('pesquisa')
-            .child('texto')
-            .on('value', (snapshot) => {
-                const perguntas = []
-                snapshot.forEach((chlidItem) => {
-                    perguntas.push({
-                        numero: chlidItem.key,
-                        pergunta: chlidItem.val(),
                     })
 
-                    resolve(perguntas)
+                })
+            setTimeout(() => {
+                resolve(fotos)
+            }, 2000)
+
+        })
+
+    },
+
+    getPesquisa: () => {
+        return new Promise((resolve, reject) => {
+            firebase
+                .database()
+                .ref('pesquisa')
+                .child('texto')
+                .on('value', (snapshot) => {
+                    const perguntas = []
+                    snapshot.forEach((chlidItem) => {
+                        perguntas.push({
+                            numero: chlidItem.key,
+                            pergunta: chlidItem.val(),
+                        })
+
+                        resolve(perguntas)
+                    })
+                })
+        })
+    },
+
+    setRespostas: (id,respostas) => {
+        firebase
+            .database()
+            .ref('usuarios')
+            .child(id)
+            .child('respostas')
+            .set(respostas)
+
+        alert('Respostas enviadas!!! Obrigado')
+    },
+
+    getIndexNoticias: () => {
+        return new Promise ((resolve, reject) => {
+            firebase
+            .database()
+            .ref('noticias')
+            .on('value', (snapshot) => {
+                const index = []
+
+                snapshot.forEach((chlidItem) => {
+                    index.push({
+                        titulo: chlidItem.val().Titulo,
+                        noticia: chlidItem.val().noticia,
+                        imagem: chlidItem.val().imagem
+                    })
+                    
+                    resolve(index)
                 })
             })
         })
-    }
+    },
+    getSorteioDias: (dias) => {
+        return new Promise((resolve, reject) => {
+
+            firebase
+                .database()
+                .ref('sorteio')
+                .child(dias)
+                .on('value', (snapshot) => {
+                    const sorteio = []
+                    snapshot.forEach((chlidItem) => {
+                        sorteio.push({
+                            produto: chlidItem.val().produto,
+                            ganhador: chlidItem.val().ganhador,
+                        })
+
+                        resolve(sorteio)
+                    })
+                })
+
+        })
+    },
+
 
 })

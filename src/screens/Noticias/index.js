@@ -1,24 +1,47 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { connect } from 'react-redux'
 import { SafeAreaView, Text } from 'react-native'
+import useConvCimedApi from '../../useConvCimedApi'
+import ListNews from '../assets/ListNews'
+
 import {
     Conteiner,
     ActionButton,
-    ActionButtonText
+    ActionButtonText,
+    ListaNoticias
 } from './styled'
 
 import Header from '../assets/Header'
 
 const Page = (props) => {
+    let news = props.noticias
+
+    console.log(news) 
     return (
         <Conteiner>
             <Header />
-            <Text>Noticias</Text>
-
-            <ActionButton onPress={()=>console.log(props.navigation.navigate('Home'))} >
+            
+            <ListaNoticias
+                data={news}
+                renderItem={({item}) => <ListNews data={item} />}
+            />
+            <ActionButton onPress={() => console.log(props.navigation.navigate('Home'))} >
                 <ActionButtonText>Fechar</ActionButtonText>
             </ActionButton>
         </Conteiner>
     )
 }
 
-export default Page
+const mapStateToProps = (state) => {
+    return {
+
+        noticias: state.agendaReducer.noticias,
+      
+    }
+}
+const mapDispatchToProps = (dispatch) => {
+    return {
+
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Page)

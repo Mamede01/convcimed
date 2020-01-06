@@ -1,5 +1,8 @@
-import React, { useState } from 'react'
-import { SafeAreaView, Text } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
+import useConvCimedApi from '../../useConvCimedApi'
+import SorteioItem from '../assets/SorteioItem'
+import { SafeAreaView, Text, FlatList } from 'react-native'
 import {
     Conteiner,
     ActionButton,
@@ -19,73 +22,61 @@ import {
 import Header from '../assets/Header'
 
 const Page = (props) => {
-    const [day, setDay] = useState('6')
+    const [day, setDay] = useState('12')
+
+    const api = useConvCimedApi()
+
+    useEffect(()=> {
+     mixHandleButton(day)      
+    }, [])
+
+    const mixHandleButton = (diac)=>{
+        setDay(diac)
+        handleItemDias(diac) 
+       }
+
+       const handleItemDias = async (dias) => {
+        const sorteio = await api.getSorteioDias(dias) 
+             
+        if(sorteio){            
+            props.setSorteioDiasStore(sorteio)
+        }
+
+        console.log(props.sorteio)
+    }   
+
+    
     
     return (
-        <Conteiner>
+        <Conteiner> 
             <Header />
             <AgendaHeader>
-                <AgendaHeaderText>Janeiro:</AgendaHeaderText>
-                <AgendaHeaderButton active={day == '6'} onPress={() => setDay('6')}>
-                    <AgendaButtonText>06</AgendaButtonText>
-                </AgendaHeaderButton>
-                <AgendaHeaderButton active={day == '7'} onPress={() => setDay('7')} >
-                    <AgendaButtonText>07</AgendaButtonText>
-                </AgendaHeaderButton>
-                <AgendaHeaderButton active={day == '8'} onPress={() => setDay('8')}>
-                    <AgendaButtonText>08</AgendaButtonText>
-                </AgendaHeaderButton>
+                <AgendaHeaderText>{props.mes[0].mes}:</AgendaHeaderText>
+                <AgendaHeaderButton active={day == props.day[0].day} onPress={() => mixHandleButton(props.day[0].day)}>
+                <AgendaButtonText>{props.day[0].day}</AgendaButtonText>
+            </AgendaHeaderButton>
+            <AgendaHeaderButton active={day == props.day[1].day} onPress={() => mixHandleButton(props.day[1].day)}>
+                <AgendaButtonText>{props.day[1].day}</AgendaButtonText>
+            </AgendaHeaderButton>
+            <AgendaHeaderButton active={day == props.day[2].day} onPress={() => mixHandleButton(props.day[2].day)}>
+                <AgendaButtonText>{props.day[2].day}</AgendaButtonText>
+            </AgendaHeaderButton>
+            <AgendaHeaderButton active={day == props.day[3].day} onPress={() => mixHandleButton(props.day[3].day)}>
+                <AgendaButtonText>{props.day[3].day}</AgendaButtonText>
+            </AgendaHeaderButton>
+            <AgendaHeaderButton active={day == props.day[4].day} onPress={() => mixHandleButton(props.day[4].day)}>
+                <AgendaButtonText>{props.day[4].day}</AgendaButtonText>
+            </AgendaHeaderButton>
+            <AgendaHeaderButton active={day == props.day[5].day} onPress={() => mixHandleButton(props.day[5].day)}>
+                <AgendaButtonText>{props.day[5].day}</AgendaButtonText> 
+            </AgendaHeaderButton>
             </AgendaHeader>
-            <AgendaList>
-            {day == '6' &&
-                <>
-                <AgendaItem>
-                    <AgendaItemText>Iphone</AgendaItemText>
-                    <AgendaItemTextPalestra>Ganhador: </AgendaItemTextPalestra>                    
-                </AgendaItem>            
-                <AgendaItem>
-                    <AgendaItemText>Carro</AgendaItemText>
-                    <AgendaItemTextPalestra>Ganhador: </AgendaItemTextPalestra>                    
-                </AgendaItem>
-                <AgendaItem>
-                    <AgendaItemText>Moletom</AgendaItemText>
-                    <AgendaItemTextPalestra>Ganhador: </AgendaItemTextPalestra>
-                </AgendaItem>
-                </>
-            }
-            {day == '7' &&
-            <>
-            <AgendaItem>
-                <AgendaItemText>Carro</AgendaItemText>
-                <AgendaItemTextPalestra>Ganhador: </AgendaItemTextPalestra>                    
-            </AgendaItem>            
-            <AgendaItem>
-                <AgendaItemText>Iphone</AgendaItemText>
-                <AgendaItemTextPalestra>Ganhador: </AgendaItemTextPalestra>                    
-            </AgendaItem>
-            <AgendaItem>
-                <AgendaItemText>Moletom</AgendaItemText>
-                <AgendaItemTextPalestra>Ganhador: </AgendaItemTextPalestra>
-            </AgendaItem>
-            </>
-            }
-            {day == '8' &&
-            <>
-            <AgendaItem>
-                <AgendaItemText>Moletom</AgendaItemText>
-                <AgendaItemTextPalestra>Ganhador: </AgendaItemTextPalestra>                    
-            </AgendaItem>            
-            <AgendaItem>
-                <AgendaItemText>Iphone</AgendaItemText>
-                <AgendaItemTextPalestra>Ganhador: </AgendaItemTextPalestra>                    
-            </AgendaItem>
-            <AgendaItem>
-                <AgendaItemText>Carro</AgendaItemText>
-                <AgendaItemTextPalestra>Ganhador: </AgendaItemTextPalestra>
-            </AgendaItem>
-            </>
-            }
-            </AgendaList>
+
+            <FlatList
+                data={props.sorteio}
+                keyExtractor={(item)=>item.index}
+                renderItem={(item) => <SorteioItem data={item} />}            
+            />     
             
             <ActionButton onPress={() => props.navigation.navigate('Home')}>
                 <ActionButtonText>Fechar</ActionButtonText>
@@ -94,4 +85,22 @@ const Page = (props) => {
     )
 }
 
-export default Page
+const mapStateToPros = (state) => {
+    return{
+        day:state.agendaReducer.day,
+        mes:state.agendaReducer.mes,
+        sorteio:state.agendaReducer.sorteioDay,        
+    }
+}
+
+//utilizo para executar uma função
+const mapDispatchToProps = (dispatch) => {
+    return{
+        reset:()=>dispatch({type:'RESET'}),
+        setDayStore: (agenda)=>dispatch({type:'SET_DAY', payload:{agenda}}),
+        setMesStore: (mes)=>dispatch({type:'SET_MES', payload:{mes}}),
+        setSorteioDiasStore: (sorteio)=>dispatch({type:'SET_SORTEIODAY', payload:{sorteio}}),
+    }
+}
+
+export default connect(mapStateToPros, mapDispatchToProps) (Page)

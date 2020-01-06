@@ -28,7 +28,7 @@ border-bottom-width:1px;
 border-bottom-color:#222;
 flex-direction:row;
 align-items:center;
-padding-left:40px;
+padding-left:10px;
 
 
 `
@@ -37,8 +37,9 @@ border-radius:5px;
 border:1px;
 border-color:#FFC400;
 align-items:center;
-padding-left:15px;
-padding-right:15px;
+padding-left:3px;
+padding-right:3px;
+width:35px;
 margin-left:15px;
 background-color:${props=>props.active?'#444':'#222'};
 `

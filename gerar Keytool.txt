@@ -1,0 +1,5 @@
+Gerar Senha Java
+t15m20p17@
+cd \Program Files\Java\jdk1.8.0_211\bin
+digitar 
+keytool -genkeypair -v -keystore convcimed.keystone -alias ConvCimed -keyalg RSA -keysize 2048 -validity 10000

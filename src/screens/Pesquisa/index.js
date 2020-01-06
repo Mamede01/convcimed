@@ -1,38 +1,33 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
-import { SafeAreaView, Text } from 'react-native'
+import useConvCimedApi from '../../useConvCimedApi'
 import {
     Conteiner,
     ActionButton,
     ActionButtonText,
-    ConteinerPergunta,
     PerguntaText,
-    PerguntaIcon,
-    ConteinerPerguntaIcon,
-    PerguntaButton,
-    ConteinerIcon,
     ScrowPergunta,
     ConteinerButtons
 } from './styled'
-
-import otimo from '../../images/pesquisa/otimo.png'
-import bom from '../../images/pesquisa/bom.png'
-import pessimo from '../../images/pesquisa/pessimo.png'
-import muito_bom from '../../images/pesquisa/muito_bom.png'
-import ruim from '../../images/pesquisa/ruim.png'
 
 import ListPesquisa from '../assets/ListPesquisa'
 
 import Header from '../assets/Header'
 
 const Page = (props) => {
-    const [pergunta01, setPergunta01] = useState('')
-    const [pergunta02, setPergunta02] = useState('')
-    const [pergunta03, setPergunta03] = useState('')
-    const [pergunta04, setPergunta04] = useState('')
-    const [pergunta05, setPergunta05] = useState('')
 
-    
+    const api = useConvCimedApi()
+
+    let perguntas = []
+
+    const mountPerguntas = (res, res2) =>{
+        
+        perguntas.push({
+            pergunta:res,
+            resposta:res2
+        })
+        
+    }
 
     return (
         <Conteiner>
@@ -41,10 +36,15 @@ const Page = (props) => {
             <ScrowPergunta
                 data={props.pesquisa}
                 keyExtractor={(item) => item.numero}
-                renderItem={({ item }) => <ListPesquisa data={item} />}
-                />
+                renderItem={({ item }) =>
+                    <ListPesquisa
+                        data={item}
+                        setPerguntaAction={(res)=> mountPerguntas(item.pergunta,res)}
+                    />
+                }
+            />
             <ConteinerButtons>
-                <ActionButton onPress={() => console.log(props.resposta)} > 
+                <ActionButton onPress={() => api.setRespostas(props.token,perguntas)} > 
                     <ActionButtonText>Enviar</ActionButtonText>
                 </ActionButton>
                 <ActionButton onPress={() => props.navigation.navigate('Home')} >
@@ -58,6 +58,7 @@ const Page = (props) => {
 const mapStateToProps = (state) => {
     return {
 
+        token:state.userReducer.token,
         pesquisa: state.agendaReducer.pesquisa,
         resposta: state.agendaReducer.resposta
 

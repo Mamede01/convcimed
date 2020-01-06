@@ -34,17 +34,18 @@ const Page = (props) => {
 
       setLoading(true)
       const res = await api.signin(email, password)
-      const nome = await api.getUserDetails(res.token)
-      const agenda = await api.getAgenda()
-      const mes = await api.getAgendaMes()
-      const eventos = await api.getItemDias('6')
-      const local = await api.getLocal()
-      const fotos = await api.getFotos()
-      const pesquisa = await api.getPesquisa()
-      console.log(pesquisa) 
-      setLoading(false)
-
-      if (res.token && res.email) {
+     
+      if (res.email && res.token){
+        const nome = await api.getUserDetails(res.token)
+        const agenda = await api.getAgenda()
+        const mes = await api.getAgendaMes()
+        const eventos = await api.getItemDias('6')
+        const local = await api.getLocal()
+        const fotos = await api.getFotos()
+        const pesquisa = await api.getPesquisa() 
+        const noticias = await api.getIndexNoticias()
+              
+        
         props.setToken(res.token)
         props.setEmailStorage(res.email)
         props.setNomeStorage(nome)
@@ -54,19 +55,27 @@ const Page = (props) => {
         props.setLocalStore(local)
         props.setFotosStore(fotos)
         props.setPesquisa(pesquisa)
+        props.setNoticia(noticias)
+
+        setLoading(false)
         props.navigation.dispatch(StackActions.reset({
           index: 0,
           actions: [
             NavigationActions.navigate({ routeName: 'HomeStack' })
           ]
         }))
-      } else {
-        props.navigation.dispatch(StackActions.reset({
-          index: 0,
-          actions: [
-            NavigationActions.navigate({ routeName: 'Login' })
-          ]
-        }))
+
+      } 
+
+      else {
+        setLoading(false)
+
+        if(res === 'auth/wrong-password'){
+          setActiveMenu('signin')
+        }else{
+          setActiveMenu('signup')
+        }
+        
       }
     }
   }
@@ -86,7 +95,7 @@ const Page = (props) => {
         alert('Cadastrado com Sucesso!!!')
         setActiveMenu('signin')
       } else {
-        console.log('Else')
+        alert('Estamos com problemas momentâneos favor tentar mais tarde')
       }
     }
 
@@ -180,7 +189,8 @@ const mapDispatchToProps = (dispatch) => {
     setItemDiasStore: (eventos) => dispatch({ type: 'SET_EVENTSDAY', payload: { eventos } }),
     setLocalStore: (local) => dispatch({ type: 'SET_LOCAL', payload: { local } }),
     setFotosStore: (fotos) => dispatch({ type: 'SET_FOTOS', payload: { fotos } }),
-    setPesquisa: (pesquisa) => dispatch({ type: 'SET_PESQUISA', payload: {pesquisa} })
+    setPesquisa: (pesquisa) => dispatch({ type: 'SET_PESQUISA', payload: {pesquisa} }),
+    setNoticia: (noticias) => dispatch({ type: 'SET_NOTICIAS', payload: {noticias} })
   };
 }
 

@@ -10,10 +10,10 @@ export const ActionButton = styled.TouchableHighlight`
   justify-content:center;
   align-items:center;
   height:50px;
+  width:100px;
   border-radius:5px;
   box-shadow:0px 2px 2px #999;
   margin:20px;
-  margin-top:50px;
 
 `
 
@@ -42,5 +42,11 @@ export const EmailText = styled.Text`
   font-size:18px;
   font-weight:bold;
   margin-top:5px;
+`
+export const ConteinerButtons = styled.View`
+  flex-direction:row; 
+  align-items:center;
+  justify-content:center;
+  
 `
 

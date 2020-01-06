@@ -5,10 +5,10 @@ import Logo from '../../../images/cimed-logo-amarelo.png'
 
 import { Container, TituloLogo } from './styled'
 
-export default function Header({ navigation }) {
+export default function Header(props) {
     return(
         <Container>
-            <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+            <TouchableOpacity onPress={() => null}>
                 <TituloLogo source={Logo} resizeMode="stretch" />
             </TouchableOpacity>
         </Container>

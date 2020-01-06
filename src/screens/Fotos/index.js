@@ -42,7 +42,7 @@ const Page = (props) => {
             </TituloFotos>
             <FlatList
             data={props.FotosReducer}
-            keyExtractor={(item)=>item.id}
+            keyExtractor={(item)=>item.url}
             numColumns={3}
             renderItem={({item}) => <ListFotos data={item}/> }
         />

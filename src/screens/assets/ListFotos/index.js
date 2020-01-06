@@ -16,8 +16,7 @@ import {
 
 export default (props) => {
     const [modalVisible, setModalVisible] = useState(false)
-    console.log(props.data.url)
-
+    
     return (
         <>
             <FotoItem onPress={() => setModalVisible(true)}>
@@ -35,7 +34,7 @@ export default (props) => {
                 <ConteinerFotoModal>
                     <FotoDetail>
                         <FotosFull
-                            resizeMode='stretch'  source={{ uri: props.data.url }}
+                            resizeMode='cover' source={{ uri: props.data.url }}
                         />
                     </FotoDetail>
                     <ActionButton onPress={() => setModalVisible(false)}>

@@ -5,7 +5,9 @@ const initialState = {
     local:[],
     fotos:[],
     pesquisa:[],
-    resposta:[]
+    resposta:[],
+    noticias:[],
+    sorteioDay:[]
 }
 
 export default (state = initialState , action) =>  {
@@ -32,6 +34,12 @@ export default (state = initialState , action) =>  {
         case 'SET_RESPOSTA':
             return{...state, resposta:action.payload.pergunta }; 
             break
+        case 'SET_NOTICIAS':
+            return{...state, noticias:action.payload.noticias }; 
+            break
+        case 'SET_SORTEIODAY':
+            return{...state, sorteioDay:action.payload.sorteio };             
+            break;
         case 'RESET':
             return initialState;
             break;            

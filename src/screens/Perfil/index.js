@@ -10,7 +10,8 @@ import {
     ConteinerImagemPerfil,
     ImagePerfil,
     EmailText,
-    NameText
+    NameText,
+    ConteinerButtons
 } from './styled'
 
 import Header from '../assets/Header'
@@ -22,51 +23,56 @@ const Page = (props) => {
 
     const resetAction = async () => {
         props.reset()
-       const resetAction = StackActions.reset({
-           index:0,
-           actions:[
-               NavigationActions.navigate({routeName:'Login'})
-           ]
-       })
+        const resetAction = StackActions.reset({
+            index: 0,
+            actions: [
+                NavigationActions.navigate({ routeName: 'Login' })
+            ]
+        })
 
-       props.navigation.dispatch(resetAction)
+        props.navigation.dispatch(resetAction)
 
-     const res = await api.signOut() 
-     console.log(res.mesage)
+        const res = await api.signOut()
+        console.log(res.mesage)
 
     }
-    
+
     return (
         <Conteiner>
             <Header />
-            
+
             <ConteinerImagemPerfil>
-                <ImagePerfil source={ImagemPerfil}  resizeMode="stretch"/>
+                <ImagePerfil source={ImagemPerfil} resizeMode="stretch" />
                 <NameText>Token: {props.token}</NameText>
-                <NameText>Nome: {props.name}</NameText>                 
-                <EmailText>Email: {props.email}</EmailText> 
+                <NameText>Nome: {props.name}</NameText>
+                <EmailText>Email: {props.email}</EmailText>
             </ConteinerImagemPerfil>
-            <ActionButton onPress={resetAction} >
-                <ActionButtonText>Sair do APP Cimed</ActionButtonText>
-            </ActionButton>
+            <ConteinerButtons>
+                <ActionButton onPress={resetAction} >
+                    <ActionButtonText>Sair APP</ActionButtonText>
+                </ActionButton>
+                <ActionButton onPress= {() => props.navigation.navigate('Home')}>
+                    <ActionButtonText>Fechar</ActionButtonText>
+                </ActionButton>
+            </ConteinerButtons>
         </Conteiner>
     )
 }
 //para exportar a pagina quando utilizamos o redux
 //a Função mapStateToPros serve para pegar as informaçoes do Redux e enviar para as props da pagina
 const mapStateToPros = (state) => {
-    return{
-        email:state.userReducer.email,
-        token:state.userReducer.token,
-        name:state.userReducer.name
+    return {
+        email: state.userReducer.email,
+        token: state.userReducer.token,
+        name: state.userReducer.name
     }
 }
 
 //utilizo para executar uma função
 const mapDispatchToProps = (dispatch) => {
-    return{
-        reset:()=>dispatch({type:'RESET'})
+    return {
+        reset: () => dispatch({ type: 'RESET' })
     }
 }
 
-export default connect(mapStateToPros, mapDispatchToProps) (Page)
+export default connect(mapStateToPros, mapDispatchToProps)(Page)
